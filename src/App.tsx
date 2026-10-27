@@ -126,9 +126,7 @@ export function App() {
   return (
     <main className={`app phase-${pos.done && !idle ? 'done' : kind ?? 'idle'}`}>
       <section className="clock" aria-live="polite">
-        <svg className="ring" aria-hidden="true">
-          <rect pathLength={100} strokeDasharray="100 100" strokeDashoffset={100 * (1 - left)} />
-        </svg>
+        <Ring left={left} />
         <div className="phase-label">
           {label}
           {run.status === 'paused' && !pos.done ? ' · paused' : ''}
@@ -140,7 +138,7 @@ export function App() {
             Rounds <strong>{pos.completedRounds}/{settings.rounds}</strong>
           </span>
           <span>
-            Rest <strong>{pos.completedRests}/{totalRests}</strong> · {formatTime(settings.rest)}
+            Rest <strong>{pos.completedRests}/{totalRests}</strong>
           </span>
         </div>
       </section>
@@ -156,6 +154,36 @@ export function App() {
 
       <SettingsForm settings={settings} onChange={setSettings} disabled={!idle} total={formatTime(totalTime(settings))} />
     </main>
+  );
+}
+
+/** Phase-coloured stroke over the clock's border that runs out with the step, anchored at top centre. */
+function Ring({ left }: { left: number }) {
+  const ref = useRef<SVGSVGElement>(null);
+  const [size, setSize] = useState({ w: 0, h: 0 });
+
+  useEffect(() => {
+    const svg = ref.current;
+    if (!svg) return;
+    const observer = new ResizeObserver(() => {
+      const box = svg.getBoundingClientRect();
+      setSize({ w: box.width, h: box.height });
+    });
+    observer.observe(svg);
+    return () => observer.disconnect();
+  }, []);
+
+  const { w, h } = size;
+  const r = 10;
+  // Clockwise from top centre and back, so the stroke shrinks towards the top.
+  const d =
+    `M ${w / 2} 0 H ${w - r} A ${r} ${r} 0 0 1 ${w} ${r} V ${h - r} A ${r} ${r} 0 0 1 ${w - r} ${h} ` +
+    `H ${r} A ${r} ${r} 0 0 1 0 ${h - r} V ${r} A ${r} ${r} 0 0 1 ${r} 0 Z`;
+
+  return (
+    <svg ref={ref} className="ring" aria-hidden="true">
+      {w > 0 && <path d={d} pathLength={100} strokeDasharray="100 100" strokeDashoffset={100 * (1 - left)} />}
+    </svg>
   );
 }
 
