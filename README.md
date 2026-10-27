@@ -53,7 +53,9 @@ After code changes, rebuild and hit the reload icon on the extension card.
 | `src/engine.ts` | Pure timer logic: steps, positions, run state, parsing |
 | `src/App.tsx` | Clock, round boxes, controls, tick loop and sound cues |
 | `src/SettingsForm.tsx` | Rounds / work / rest / prep / sound / countdown |
-| `src/audio.ts` | Web Audio synthesized bell, beep, whistle, countdown |
+| `src/audio.ts` | Web Audio synthesized bell, beep, whistle; plays voice clips |
+| `public/voice/` | Spoken "three / two / one" countdown clips |
+| `scripts/gen-voice.py` | Regenerates the voice clips with Kokoro TTS |
 | `src/badge.ts` | Toolbar badge with seconds left, colored by phase |
 | `src/storage.ts` | `chrome.storage.sync` settings, `chrome.storage.session` run |
 
@@ -61,3 +63,9 @@ The timer is timestamp-based: state is `startedAt` + time banked across pauses,
 and the current phase is computed from `Date.now()`. Closing and reopening the
 panel mid-workout picks up where the clock says you are; sounds only play
 while the panel is open.
+
+## Credits
+
+The spoken countdown was generated with [Kokoro](https://huggingface.co/hexgrad/Kokoro-82M)
+(Apache-2.0) via [kokoro-onnx](https://github.com/thewh1teagle/kokoro-onnx),
+voice `af_heart`. See `scripts/gen-voice.py` to change the voice.

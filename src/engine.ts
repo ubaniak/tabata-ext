@@ -3,6 +3,8 @@
 
 export type SoundKind = 'bell' | 'beep' | 'whistle';
 export type CountdownMode = 'every' | 'work' | 'off';
+/** How the 3-2-1 countdown sounds: a spoken number or a short tick. */
+export type CountdownStyle = 'voice' | 'beep';
 
 export interface Settings {
   rounds: number;
@@ -15,6 +17,7 @@ export interface Settings {
   includeLastRest: boolean;
   sound: SoundKind;
   countdown: CountdownMode;
+  countdownStyle: CountdownStyle;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -25,6 +28,7 @@ export const DEFAULT_SETTINGS: Settings = {
   includeLastRest: false,
   sound: 'bell',
   countdown: 'every',
+  countdownStyle: 'voice',
 };
 
 export type StepKind = 'prep' | 'work' | 'rest';

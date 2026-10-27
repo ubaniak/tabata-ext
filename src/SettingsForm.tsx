@@ -1,5 +1,12 @@
 import { useEffect, useState } from 'react';
-import { formatTime, parseTime, type CountdownMode, type Settings, type SoundKind } from './engine';
+import {
+  formatTime,
+  parseTime,
+  type CountdownMode,
+  type CountdownStyle,
+  type Settings,
+  type SoundKind,
+} from './engine';
 
 interface Props {
   settings: Settings;
@@ -51,6 +58,17 @@ export function SettingsForm({ settings, onChange, disabled, total }: Props) {
           <option value="every">Every transition</option>
           <option value="work">Before work only</option>
           <option value="off">Off</option>
+        </select>
+      </label>
+      <label>
+        <span>Countdown sound</span>
+        <select
+          value={settings.countdownStyle}
+          onChange={(e) => update({ countdownStyle: e.target.value as CountdownStyle })}
+          disabled={settings.countdown === 'off'}
+        >
+          <option value="voice">Voice (3, 2, 1)</option>
+          <option value="beep">Beep</option>
         </select>
       </label>
       <div className="total">

@@ -68,7 +68,7 @@ export function App() {
         if (pos.done) playFinish(settings.sound);
         else playTransition(settings.sound);
       } else if (last && countdownDue(settings.countdown, steps[pos.index + 1], last.second, second)) {
-        playCountdown();
+        playCountdown(second, settings.countdownStyle);
       }
       prev.current = { index: pos.index, second };
       setBadge(pos.step?.kind ?? null, second);
