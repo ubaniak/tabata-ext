@@ -80,12 +80,20 @@ describe('positionAt', () => {
     const p = positionAt(steps, 35_000);
     expect(p.step?.kind).toBe('rest');
     expect(p.completedRounds).toBe(1);
+    expect(p.completedRests).toBe(0);
+  });
+
+  it('counts completed rest intervals', () => {
+    const p = positionAt(steps, 40_000);
+    expect(p.step?.kind).toBe('work');
+    expect(p.completedRests).toBe(1);
   });
 
   it('finishes after the last step', () => {
     const p = positionAt(steps, 60_000);
     expect(p.done).toBe(true);
     expect(p.completedRounds).toBe(2);
+    expect(p.completedRests).toBe(1);
   });
 });
 

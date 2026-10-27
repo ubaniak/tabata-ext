@@ -98,21 +98,25 @@ export interface Position {
   remaining: number;
   /** Work intervals fully completed. */
   completedRounds: number;
+  /** Rest intervals fully completed. */
+  completedRests: number;
   done: boolean;
 }
 
 export function positionAt(steps: Step[], elapsedMs: number): Position {
   let t = elapsedMs;
   let completedRounds = 0;
+  let completedRests = 0;
   for (let i = 0; i < steps.length; i++) {
     const ms = steps[i].duration * 1000;
     if (t < ms) {
-      return { index: i, step: steps[i], remaining: ms - t, completedRounds, done: false };
+      return { index: i, step: steps[i], remaining: ms - t, completedRounds, completedRests, done: false };
     }
     t -= ms;
     if (steps[i].kind === 'work') completedRounds++;
+    if (steps[i].kind === 'rest') completedRests++;
   }
-  return { index: steps.length, step: null, remaining: 0, completedRounds, done: true };
+  return { index: steps.length, step: null, remaining: 0, completedRounds, completedRests, done: true };
 }
 
 /** "M:SS" for whole seconds. */
