@@ -1,0 +1,174 @@
+:root {
+  --bg: #f6f6f4;
+  --surface: #ffffff;
+  --text: #1c1c1a;
+  --muted: #6b6b66;
+  --border: #dddcd6;
+  --prep: #d9a400;
+  --work: #1f9d55;
+  --rest: #d64545;
+  --done: #3b6fd4;
+  --phase: var(--muted);
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #161615;
+    --surface: #212120;
+    --text: #f1f1ee;
+    --muted: #9a9a94;
+    --border: #3a3a37;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.4 system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.phase-prep { --phase: var(--prep); }
+.phase-work { --phase: var(--work); }
+.phase-rest { --phase: var(--rest); }
+.phase-done { --phase: var(--done); }
+
+.clock {
+  text-align: center;
+  padding: 16px 8px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 2px solid var(--phase);
+  transition: border-color 0.2s;
+}
+
+.phase-label {
+  font-size: 15px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--phase);
+}
+
+.time {
+  font-size: clamp(56px, 24vw, 120px);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.rounds {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  margin: 8px 0 4px;
+  padding: 0;
+}
+
+.round {
+  min-width: 28px;
+  padding: 4px 0;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--bg);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+.round.done { background: var(--muted); color: var(--surface); border-color: transparent; }
+.round.work { background: var(--work); color: #fff; border-color: transparent; }
+.round.rest { background: var(--rest); color: #fff; border-color: transparent; }
+
+.round-count {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+}
+
+button {
+  flex: 1;
+  padding: 12px;
+  font: inherit;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+
+button.primary {
+  background: var(--work);
+  border-color: transparent;
+  color: #fff;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.settings {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.settings:disabled {
+  opacity: 0.6;
+}
+
+.settings label,
+.settings .total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.settings input[type='text'],
+.settings select {
+  width: 140px;
+  padding: 6px 8px;
+  font: inherit;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  text-align: right;
+}
+
+.settings input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+}
+
+.settings .total {
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
