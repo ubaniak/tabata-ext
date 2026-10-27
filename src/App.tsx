@@ -119,18 +119,29 @@ export function App() {
   const kind = idle ? null : pos.step?.kind ?? null;
   const clockSeconds = idle ? (steps[0]?.duration ?? 0) : Math.ceil(pos.remaining / 1000);
   const label = idle ? 'Ready' : pos.done ? 'Done' : pos.step ? LABELS[pos.step.kind] : '';
+  const totalRests = steps.filter((step) => step.kind === 'rest').length;
+  // Share of the current step still to go; the border around the clock shrinks with it.
+  const left = !idle && pos.step ? pos.remaining / (pos.step.duration * 1000) : 1;
 
   return (
     <main className={`app phase-${pos.done && !idle ? 'done' : kind ?? 'idle'}`}>
       <section className="clock" aria-live="polite">
+        <svg className="ring" aria-hidden="true">
+          <rect pathLength={100} strokeDasharray="100 100" strokeDashoffset={100 * (1 - left)} />
+        </svg>
         <div className="phase-label">
           {label}
           {run.status === 'paused' && !pos.done ? ' · paused' : ''}
         </div>
         <div className="time">{formatTime(clockSeconds)}</div>
         <RoundBoxes rounds={settings.rounds} current={idle ? null : pos.step} completed={pos.completedRounds} />
-        <div className="round-count">
-          {pos.completedRounds}/{settings.rounds}
+        <div className="counts">
+          <span>
+            Rounds <strong>{pos.completedRounds}/{settings.rounds}</strong>
+          </span>
+          <span>
+            Rest <strong>{pos.completedRests}/{totalRests}</strong> · {formatTime(settings.rest)}
+          </span>
         </div>
       </section>
 
