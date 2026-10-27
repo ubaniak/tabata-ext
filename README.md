@@ -3,6 +3,29 @@
 Tabata interval timer as a Chrome extension (Manifest V3). The timer runs in
 Chrome's side panel, so it keeps going while you switch tabs.
 
+## Install
+
+The extension isn't on the Chrome Web Store yet, so install it from a release.
+Requires Chrome 116 or newer.
+
+1. Go to the [latest release](https://github.com/ubaniak/tabata-ext/releases/latest)
+   and download `tabata-ext-vX.Y.Z.zip`.
+2. Unzip it somewhere you'll keep it. Chrome loads the extension from this
+   folder, so don't delete or move it afterwards.
+3. Open `chrome://extensions` and turn on **Developer mode** (top right).
+4. Click **Load unpacked** and select the unzipped folder (the one containing
+   `manifest.json`).
+5. Optional: click the puzzle-piece icon in the toolbar and pin **Tabata Timer**.
+6. Click the extension's toolbar icon to open the timer in the side panel.
+
+### Updating
+
+Download the new release zip, unzip it over the old folder, then click the
+reload icon on the extension's card in `chrome://extensions`. Reusing the same
+folder keeps your settings: Chrome ties an unpacked extension's identity (and
+its saved settings) to the folder path, so loading from a new folder starts
+fresh.
+
 ## Develop
 
 ```sh
