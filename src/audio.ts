@@ -3,6 +3,8 @@
 import type { CountdownStyle, SoundKind } from './engine';
 
 let ctx: AudioContext | null = null;
+// Limiter in front of the speakers so stacked partials can be loud without clipping.
+let out: AudioNode | null = null;
 
 const VOICE_FILES: Record<number, string> = { 3: 'three', 2: 'two', 1: 'one' };
 const voice = new Map<number, AudioBuffer>();
@@ -10,7 +12,17 @@ let voiceLoading = false;
 
 /** Must first be called from a user gesture (e.g. the Start click). */
 export function unlockAudio(): void {
-  ctx ??= new AudioContext();
+  if (!ctx) {
+    ctx = new AudioContext();
+    const limiter = ctx.createDynamicsCompressor();
+    limiter.threshold.value = -6;
+    limiter.knee.value = 0;
+    limiter.ratio.value = 20;
+    limiter.attack.value = 0.001;
+    limiter.release.value = 0.1;
+    limiter.connect(ctx.destination);
+    out = limiter;
+  }
   if (ctx.state === 'suspended') void ctx.resume();
   if (!voiceLoading) {
     voiceLoading = true;
@@ -33,7 +45,7 @@ async function loadVoice(audio: AudioContext): Promise<void> {
 }
 
 function tone(freq: number, duration: number, type: OscillatorType, gain: number, at = 0): void {
-  if (!ctx) return;
+  if (!ctx || !out) return;
   const t0 = ctx.currentTime + at;
   const osc = ctx.createOscillator();
   const amp = ctx.createGain();
@@ -41,7 +53,7 @@ function tone(freq: number, duration: number, type: OscillatorType, gain: number
   osc.frequency.value = freq;
   amp.gain.setValueAtTime(gain, t0);
   amp.gain.exponentialRampToValueAtTime(0.0001, t0 + duration);
-  osc.connect(amp).connect(ctx.destination);
+  osc.connect(amp).connect(out);
   osc.start(t0);
   osc.stop(t0 + duration);
 }
@@ -59,14 +71,22 @@ export function playCountdown(second: number, style: CountdownStyle): void {
   tone(660, 0.12, 'sine', 0.4);
 }
 
+function bellStrike(at: number): void {
+  tone(1150, 1.1, 'triangle', 0.7, at);
+  tone(1150 * 2.76, 0.7, 'sine', 0.35, at);
+  tone(1150 * 5.4, 0.4, 'sine', 0.2, at);
+  tone(4200, 0.03, 'square', 0.25, at);
+}
+
 /** Played when a step starts. */
 export function playTransition(kind: SoundKind): void {
   switch (kind) {
     case 'bell':
-      // Inharmonic partials with a long decay read as a struck bell.
-      tone(830, 1.4, 'sine', 0.5);
-      tone(830 * 2.76, 0.9, 'sine', 0.15);
-      tone(830 * 5.4, 0.5, 'sine', 0.06);
+      // Boxing-ring double strike: a bright, high bell hit twice in quick
+      // succession. Inharmonic partials read as metal; the short square click
+      // gives each hit a hard attack.
+      bellStrike(0);
+      bellStrike(0.16);
       break;
     case 'beep':
       tone(990, 0.35, 'square', 0.2);
