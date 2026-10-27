@@ -67,10 +67,7 @@ body {
   pointer-events: none;
 }
 
-.ring rect {
-  width: 100%;
-  height: 100%;
-  rx: 10px;
+.ring path {
   fill: none;
   stroke: var(--phase);
   stroke-width: 4px;
@@ -150,6 +147,10 @@ button.primary {
   background: var(--work);
   border-color: transparent;
   color: #fff;
+}
+
+.phase-rest button.primary {
+  background: var(--rest);
 }
 
 button:disabled {
