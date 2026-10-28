@@ -14,10 +14,11 @@ import {
   type Settings,
   type Step,
 } from './engine';
-import { playCountdown, playFinish, playTransition, unlockAudio } from './audio';
+import { playAnnouncement, playCountdown, playFinish, playTransition, unlockAudio } from './audio';
 import { setBadge } from './badge';
 import { loadRun, loadSettings, saveRun, saveSettings } from './storage';
 import { SettingsForm } from './SettingsForm';
+import { enterFullScreen, exitFullScreen, isFullView, onFullscreenChange } from './fullscreen';
 
 const LABELS = { prep: 'Get ready', work: 'Work', rest: 'Rest' } as const;
 
@@ -26,6 +27,7 @@ export function App() {
   const [run, setRun] = useState<RunState>(IDLE_RUN);
   const [loaded, setLoaded] = useState(false);
   const [now, setNow] = useState(() => Date.now());
+  const [full, setFull] = useState(isFullView);
 
   const steps = useMemo(() => buildSteps(settings), [settings]);
 
@@ -66,7 +68,11 @@ export function App() {
 
       if (last && pos.index !== last.index) {
         if (pos.done) playFinish(settings.sound);
-        else playTransition(settings.sound);
+        // Prep starts silently; the 3-2-1 countdown at its end still plays.
+        else if (pos.step?.kind !== 'prep') {
+          playTransition(settings.sound);
+          if (settings.announce && pos.step) playAnnouncement(pos.step.kind);
+        }
       } else if (last && countdownDue(settings.countdown, steps[pos.index + 1], last.second, second)) {
         playCountdown(second, settings.countdownStyle);
       }
@@ -89,6 +95,8 @@ export function App() {
     };
   }, [run.status]);
 
+  useEffect(() => (isFullView ? undefined : onFullscreenChange(setFull)), []);
+
   const pos = positionAt(steps, elapsed(run, now));
 
   const onStartPause = () => {
@@ -100,7 +108,7 @@ export function App() {
     unlockAudio();
     if (run.status === 'idle' || pos.done) {
       // Fresh start: a fake "before the first step" reading makes the first
-      // step's transition sound play.
+      // step's transition sound play (unless it's prep, which is silent).
       prev.current = { index: -1, second: Infinity };
       setRun(start(IDLE_RUN, t));
     } else {
@@ -115,6 +123,23 @@ export function App() {
     setBadge(null, 0);
   };
 
+  // In full screen there's no settings form to type into, so Space and Esc are free.
+  const onKey = useRef<(e: KeyboardEvent) => void>(() => {});
+  onKey.current = (e) => {
+    if (!full) return;
+    if (e.key === ' ') {
+      e.preventDefault();
+      if (steps.length > 0) onStartPause();
+    } else if (e.key === 'Escape') {
+      void exitFullScreen();
+    }
+  };
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => onKey.current(e);
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
+
   const idle = run.status === 'idle';
   const kind = idle ? null : pos.step?.kind ?? null;
   const clockSeconds = idle ? (steps[0]?.duration ?? 0) : Math.ceil(pos.remaining / 1000);
@@ -124,7 +149,7 @@ export function App() {
   const left = !idle && pos.step ? pos.remaining / (pos.step.duration * 1000) : 1;
 
   return (
-    <main className={`app phase-${pos.done && !idle ? 'done' : kind ?? 'idle'}`}>
+    <main className={`app phase-${pos.done && !idle ? 'done' : kind ?? 'idle'}${full ? ' full' : ''}`}>
       <section className="clock" aria-live="polite">
         <Ring left={left} />
         <div className="phase-label">
@@ -150,9 +175,14 @@ export function App() {
         <button onClick={onReset} disabled={idle}>
           Reset
         </button>
+        <button onClick={() => void (full ? exitFullScreen() : enterFullScreen())}>
+          {full ? 'Exit full screen' : 'Full screen'}
+        </button>
       </div>
 
-      <SettingsForm settings={settings} onChange={setSettings} disabled={!idle} total={formatTime(totalTime(settings))} />
+      {!full && (
+        <SettingsForm settings={settings} onChange={setSettings} disabled={!idle} total={formatTime(totalTime(settings))} />
+      )}
     </main>
   );
 }

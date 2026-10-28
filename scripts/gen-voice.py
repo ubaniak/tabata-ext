@@ -1,4 +1,4 @@
-"""Generate the spoken countdown clips in public/voice/ with Kokoro TTS.
+"""Generate the spoken countdown and phase clips in public/voice/ with Kokoro TTS.
 
 Kokoro (https://github.com/thewh1teagle/kokoro-onnx) is an open-weight
 neural TTS model released under Apache-2.0, so the generated clips can ship
@@ -25,7 +25,7 @@ from pathlib import Path
 import soundfile as sf
 from kokoro_onnx import Kokoro
 
-CLIPS = {"three": "Three!", "two": "Two!", "one": "One!"}
+CLIPS = {"three": "Three!", "two": "Two!", "one": "One!", "work": "Work!", "rest": "Rest!"}
 OUT_DIR = Path(__file__).resolve().parent.parent / "public" / "voice"
 
 
