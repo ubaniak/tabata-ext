@@ -78,6 +78,10 @@ export function SettingsForm({ settings, onChange, disabled, total }: Props) {
           Record my 3, 2, 1…
         </button>
       )}
+      <label className="toggle">
+        <span>Announce work / rest</span>
+        <input type="checkbox" checked={settings.announce} onChange={(e) => update({ announce: e.target.checked })} />
+      </label>
       <div className="total">
         <span>Total workout time</span>
         <strong>{total}</strong>

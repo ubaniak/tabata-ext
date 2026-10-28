@@ -18,6 +18,10 @@ Requires Chrome 116 or newer.
 5. Optional: click the puzzle-piece icon in the toolbar and pin **Tabata Timer**.
 6. Click the extension's toolbar icon to open the timer in the side panel.
 
+Click **Full screen** to move the timer into a full screen window so you can
+read it from across the room. Space starts and pauses; Esc (or **Exit full
+screen**) goes back to the side panel. The workout keeps running throughout.
+
 ### Updating
 
 Download the new release zip, unzip it over the old folder, then click the
@@ -57,8 +61,9 @@ After code changes, rebuild and hit the reload icon on the extension card.
 | `recorder.html`, `src/recorder.tsx` | Page for recording your own 3, 2, 1 (opens in a tab) |
 | `src/clip.ts` | Trims, normalizes and WAV-encodes recorded clips |
 | `src/voiceStore.ts` | Recorded clips in `chrome.storage.local` |
-| `public/voice/` | Spoken "three / two / one" countdown clips |
+| `public/voice/` | Spoken "three / two / one" countdown and "work / rest" clips |
 | `scripts/gen-voice.py` | Regenerates the voice clips with Kokoro TTS |
+| `src/fullscreen.ts` | Moves the timer into its own full screen window and back |
 | `src/badge.ts` | Toolbar badge with seconds left, colored by phase |
 | `src/storage.ts` | `chrome.storage.sync` settings, `chrome.storage.session` run |
 
@@ -76,6 +81,6 @@ the extension's local storage; any word you skip uses the built-in voice.
 
 ## Credits
 
-The spoken countdown was generated with [Kokoro](https://huggingface.co/hexgrad/Kokoro-82M)
+The spoken countdown and announcements were generated with [Kokoro](https://huggingface.co/hexgrad/Kokoro-82M)
 (Apache-2.0) via [kokoro-onnx](https://github.com/thewh1teagle/kokoro-onnx),
 voice `af_heart`. See `scripts/gen-voice.py` to change the voice.

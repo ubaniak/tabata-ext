@@ -251,3 +251,54 @@ button:disabled {
 .takes button {
   padding: 8px;
 }
+
+/* Full screen: the clock fills the window so it reads from across the room. */
+.app.full {
+  max-width: none;
+  height: 100vh;
+  padding: 24px;
+}
+
+.full .clock {
+  flex: 1;
+  border-width: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 0;
+}
+
+.full .ring {
+  top: -4px;
+  left: -4px;
+  width: calc(100% + 8px);
+  height: calc(100% + 8px);
+}
+
+.full .ring path {
+  stroke-width: 8px;
+}
+
+.full .phase-label {
+  font-size: clamp(20px, 6vmin, 72px);
+}
+
+.full .time {
+  font-size: min(40vh, 26vw);
+  line-height: 1;
+}
+
+.full .round {
+  min-width: clamp(28px, 5vmin, 56px);
+  font-size: clamp(12px, 2.4vmin, 24px);
+}
+
+.full .counts {
+  font-size: clamp(14px, 3vmin, 32px);
+}
+
+.full .controls {
+  max-width: 720px;
+  width: 100%;
+  margin: 0 auto;
+}

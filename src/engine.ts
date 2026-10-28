@@ -18,6 +18,8 @@ export interface Settings {
   sound: SoundKind;
   countdown: CountdownMode;
   countdownStyle: CountdownStyle;
+  /** Say "Work" / "Rest" when those steps start. */
+  announce: boolean;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -29,6 +31,7 @@ export const DEFAULT_SETTINGS: Settings = {
   sound: 'bell',
   countdown: 'every',
   countdownStyle: 'voice',
+  announce: true,
 };
 
 export type StepKind = 'prep' | 'work' | 'rest';
