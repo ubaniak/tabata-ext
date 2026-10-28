@@ -98,9 +98,93 @@ export function playTransition(kind: SoundKind): void {
   }
 }
 
-/** Played once when the workout finishes. */
+/**
+ * Synthesized tiger roar starting `at` seconds from now on `audio`'s clock.
+ * A low, detuned sawtooth growl is chopped by a fast LFO for the throat rasp,
+ * distorted for grit, and pushed through a resonant filter that sweeps open and
+ * shut like a mouth. Filtered noise on top supplies the breath.
+ */
+export function roar(audio: BaseAudioContext, dest: AudioNode, at = 0): void {
+  const t0 = audio.currentTime + at;
+  const len = 2.4;
+  const end = t0 + len;
+
+  const master = audio.createGain();
+  master.gain.setValueAtTime(0.0001, t0);
+  master.gain.exponentialRampToValueAtTime(0.9, t0 + 0.25);
+  master.gain.setValueAtTime(0.9, t0 + 0.9);
+  master.gain.exponentialRampToValueAtTime(0.5, t0 + 1.6);
+  master.gain.exponentialRampToValueAtTime(0.0001, end);
+  master.connect(dest);
+
+  // Mouth: resonant low-pass that opens on the swell and closes on the tail.
+  const mouth = audio.createBiquadFilter();
+  mouth.type = 'lowpass';
+  mouth.Q.value = 6;
+  mouth.frequency.setValueAtTime(350, t0);
+  mouth.frequency.exponentialRampToValueAtTime(1600, t0 + 0.5);
+  mouth.frequency.exponentialRampToValueAtTime(900, t0 + 1.3);
+  mouth.frequency.exponentialRampToValueAtTime(250, end);
+  mouth.connect(master);
+
+  const grit = audio.createWaveShaper();
+  const curve = new Float32Array(1024);
+  for (let i = 0; i < curve.length; i++) {
+    const x = (i / (curve.length - 1)) * 2 - 1;
+    curve[i] = Math.tanh(x * 4);
+  }
+  grit.curve = curve;
+  grit.connect(mouth);
+
+  // Rasp: amplitude modulation at ~30 Hz, the flutter of vocal folds.
+  const rasp = audio.createGain();
+  rasp.gain.value = 0.6;
+  const lfo = audio.createOscillator();
+  const lfoDepth = audio.createGain();
+  lfo.frequency.setValueAtTime(34, t0);
+  lfo.frequency.linearRampToValueAtTime(24, end);
+  lfoDepth.gain.value = 0.4;
+  lfo.connect(lfoDepth).connect(rasp.gain);
+  rasp.connect(grit);
+  lfo.start(t0);
+  lfo.stop(end);
+
+  // Growl: pitch climbs into the roar then sags as it runs out of breath.
+  for (const detune of [1, 1.013, 0.5]) {
+    const osc = audio.createOscillator();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(95 * detune, t0);
+    osc.frequency.exponentialRampToValueAtTime(165 * detune, t0 + 0.45);
+    osc.frequency.exponentialRampToValueAtTime(120 * detune, t0 + 1.4);
+    osc.frequency.exponentialRampToValueAtTime(70 * detune, end);
+    const g = audio.createGain();
+    g.gain.value = detune === 0.5 ? 0.5 : 0.35;
+    osc.connect(g).connect(rasp);
+    osc.start(t0);
+    osc.stop(end);
+  }
+
+  // Breath: band-passed noise riding along with the growl.
+  const noise = audio.createBuffer(1, Math.ceil(audio.sampleRate * len), audio.sampleRate);
+  const data = noise.getChannelData(0);
+  for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+  const breath = audio.createBufferSource();
+  breath.buffer = noise;
+  const band = audio.createBiquadFilter();
+  band.type = 'bandpass';
+  band.frequency.value = 700;
+  band.Q.value = 0.8;
+  const breathGain = audio.createGain();
+  breathGain.gain.value = 0.25;
+  breath.connect(band).connect(breathGain).connect(rasp);
+  breath.start(t0);
+  breath.stop(end);
+}
+
+/** Played once when the workout finishes: three transition cues, then a roar. */
 export function playFinish(kind: SoundKind): void {
   playTransition(kind);
   setTimeout(() => playTransition(kind), 450);
   setTimeout(() => playTransition(kind), 900);
+  if (ctx && out) roar(ctx, out, 1.5);
 }
