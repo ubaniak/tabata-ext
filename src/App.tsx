@@ -14,7 +14,7 @@ import {
   type Settings,
   type Step,
 } from './engine';
-import { playCountdown, playFinish, playTransition, unlockAudio } from './audio';
+import { playAnnouncement, playCountdown, playFinish, playTransition, unlockAudio } from './audio';
 import { setBadge } from './badge';
 import { loadRun, loadSettings, saveRun, saveSettings } from './storage';
 import { SettingsForm } from './SettingsForm';
@@ -66,7 +66,10 @@ export function App() {
 
       if (last && pos.index !== last.index) {
         if (pos.done) playFinish(settings.sound);
-        else playTransition(settings.sound);
+        else {
+          playTransition(settings.sound);
+          if (settings.announce && pos.step) playAnnouncement(pos.step.kind);
+        }
       } else if (last && countdownDue(settings.countdown, steps[pos.index + 1], last.second, second)) {
         playCountdown(second, settings.countdownStyle);
       }

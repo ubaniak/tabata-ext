@@ -54,7 +54,7 @@ After code changes, rebuild and hit the reload icon on the extension card.
 | `src/App.tsx` | Clock, round boxes, controls, tick loop and sound cues |
 | `src/SettingsForm.tsx` | Rounds / work / rest / prep / sound / countdown |
 | `src/audio.ts` | Web Audio synthesized bell, beep, whistle; plays voice clips |
-| `public/voice/` | Spoken "three / two / one" countdown clips |
+| `public/voice/` | Spoken "three / two / one" countdown and "work / rest" clips |
 | `scripts/gen-voice.py` | Regenerates the voice clips with Kokoro TTS |
 | `src/badge.ts` | Toolbar badge with seconds left, colored by phase |
 | `src/storage.ts` | `chrome.storage.sync` settings, `chrome.storage.session` run |
@@ -66,6 +66,6 @@ while the panel is open.
 
 ## Credits
 
-The spoken countdown was generated with [Kokoro](https://huggingface.co/hexgrad/Kokoro-82M)
+The spoken countdown and announcements were generated with [Kokoro](https://huggingface.co/hexgrad/Kokoro-82M)
 (Apache-2.0) via [kokoro-onnx](https://github.com/thewh1teagle/kokoro-onnx),
 voice `af_heart`. See `scripts/gen-voice.py` to change the voice.
