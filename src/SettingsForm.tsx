@@ -7,6 +7,7 @@ import {
   type Settings,
   type SoundKind,
 } from './engine';
+import { openRecorder } from './voiceStore';
 
 interface Props {
   settings: Settings;
@@ -68,9 +69,15 @@ export function SettingsForm({ settings, onChange, disabled, total }: Props) {
           disabled={settings.countdown === 'off'}
         >
           <option value="voice">Voice (3, 2, 1)</option>
+          <option value="mine">My voice</option>
           <option value="beep">Beep</option>
         </select>
       </label>
+      {settings.countdownStyle === 'mine' && settings.countdown !== 'off' && (
+        <button type="button" className="record-link" onClick={openRecorder}>
+          Record my 3, 2, 1…
+        </button>
+      )}
       <label className="toggle">
         <span>Announce work / rest</span>
         <input type="checkbox" checked={settings.announce} onChange={(e) => update({ announce: e.target.checked })} />

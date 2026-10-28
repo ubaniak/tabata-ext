@@ -58,6 +58,9 @@ After code changes, rebuild and hit the reload icon on the extension card.
 | `src/App.tsx` | Clock, round boxes, controls, tick loop and sound cues |
 | `src/SettingsForm.tsx` | Rounds / work / rest / prep / sound / countdown |
 | `src/audio.ts` | Web Audio synthesized bell, beep, whistle; plays voice clips |
+| `recorder.html`, `src/recorder.tsx` | Page for recording your own 3, 2, 1 (opens in a tab) |
+| `src/clip.ts` | Trims, normalizes and WAV-encodes recorded clips |
+| `src/voiceStore.ts` | Recorded clips in `chrome.storage.local` |
 | `public/voice/` | Spoken "three / two / one" countdown and "work / rest" clips |
 | `scripts/gen-voice.py` | Regenerates the voice clips with Kokoro TTS |
 | `src/fullscreen.ts` | Moves the timer into its own full screen window and back |
@@ -68,6 +71,13 @@ The timer is timestamp-based: state is `startedAt` + time banked across pauses,
 and the current phase is computed from `Date.now()`. Closing and reopening the
 panel mid-workout picks up where the clock says you are; sounds only play
 while the panel is open.
+
+## Your own voice
+
+Set **Countdown sound** to **My voice** and click **Record my 3, 2, 1…**. A tab
+opens where you record "three", "two" and "one" with your microphone (Chrome
+asks for mic access the first time). Clips are trimmed, levelled and saved in
+the extension's local storage; any word you skip uses the built-in voice.
 
 ## Credits
 

@@ -202,6 +202,56 @@ button:disabled {
   border-top: 1px solid var(--border);
 }
 
+.settings .record-link {
+  flex: none;
+  justify-self: end;
+  padding: 6px 10px;
+  font-weight: 500;
+}
+
+.recorder h1 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.recorder .hint {
+  margin: 0;
+  color: var(--muted);
+}
+
+.recorder .error {
+  margin: 0;
+  color: var(--rest);
+  font-weight: 600;
+}
+
+.takes {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 12px;
+  list-style: none;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.takes li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.takes .word {
+  width: 56px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.takes button {
+  padding: 8px;
+}
+
 /* Full screen: the clock fills the window so it reads from across the room. */
 .app.full {
   max-width: none;
