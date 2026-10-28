@@ -68,7 +68,8 @@ export function App() {
 
       if (last && pos.index !== last.index) {
         if (pos.done) playFinish(settings.sound);
-        else {
+        // Prep starts silently; the 3-2-1 countdown at its end still plays.
+        else if (pos.step?.kind !== 'prep') {
           playTransition(settings.sound);
           if (settings.announce && pos.step) playAnnouncement(pos.step.kind);
         }
@@ -107,7 +108,7 @@ export function App() {
     unlockAudio();
     if (run.status === 'idle' || pos.done) {
       // Fresh start: a fake "before the first step" reading makes the first
-      // step's transition sound play.
+      // step's transition sound play (unless it's prep, which is silent).
       prev.current = { index: -1, second: Infinity };
       setRun(start(IDLE_RUN, t));
     } else {
