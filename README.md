@@ -57,7 +57,7 @@ After code changes, rebuild and hit the reload icon on the extension card.
 | `src/engine.ts` | Pure timer logic: steps, positions, run state, parsing |
 | `src/App.tsx` | Clock, round boxes, controls, tick loop and sound cues |
 | `src/SettingsForm.tsx` | Rounds / work / rest / prep / sound / countdown |
-| `src/audio.ts` | Web Audio synthesized bell, beep, whistle; plays voice clips |
+| `src/audio.ts` | Web Audio synthesized bell, beep (CrossHero-style 1 kHz), whistle; plays voice clips |
 | `recorder.html`, `src/recorder.tsx` | Page for recording your own 3, 2, 1, work, rest and done (opens in a tab) |
 | `src/clip.ts` | Trims, normalizes and WAV-encodes recorded clips |
 | `src/voiceStore.ts` | Recorded clips in `chrome.storage.local` |
