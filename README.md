@@ -57,11 +57,12 @@ After code changes, rebuild and hit the reload icon on the extension card.
 | `src/engine.ts` | Pure timer logic: steps, positions, run state, parsing |
 | `src/App.tsx` | Clock, round boxes, controls, tick loop and sound cues |
 | `src/SettingsForm.tsx` | Rounds / work / rest / prep / sound / countdown |
-| `src/audio.ts` | Web Audio synthesized bell, beep, whistle and rest buzzer; plays voice and sound clips |
+| `src/audio.ts` | Web Audio synthesized bell, beep, whistle; plays voice and sound clips |
 | `recorder.html`, `src/recorder.tsx` | Page for recording your own 3, 2, 1, work, rest and done (opens in a tab) |
 | `src/clip.ts` | Trims, normalizes and WAV-encodes recorded clips |
 | `src/voiceStore.ts` | Recorded clips in `chrome.storage.local` |
 | `public/sounds/bell.mp3` | Boxing "opening bell" (rings three times) played as work starts (Pixabay sound 421471, free to use) |
+| `public/sounds/buzzer.mp3` | "Buzzer or wrong answer" played as rest starts (Pixabay sound 20582, free to use) |
 | `public/sounds/roar.mp3` | Cougar roar and growl played when the workout finishes (two Pixabay clips joined, free to use) |
 | `public/voice/` | Spoken "three / two / one" countdown clips |
 | `scripts/gen-voice.py` | Regenerates the voice clips with Kokoro TTS |
