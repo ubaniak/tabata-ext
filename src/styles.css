@@ -270,13 +270,21 @@ button:disabled {
 .remote-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 8px;
 }
 
 .remote h2 {
   margin: 0;
+  margin-right: auto;
   font-size: 15px;
+}
+
+.remote-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .remote .hint {

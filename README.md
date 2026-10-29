@@ -24,7 +24,7 @@ screen**) goes back to the side panel. The workout keeps running throughout.
 
 ## Phone remote
 
-Open **Phone remote** at the bottom of the side panel and click **Connect
+Click **Phone remote** at the bottom of the side panel, then **Connect
 phone**. Scan the QR code with your phone's camera: a page opens where you can
 set rounds, work, rest and get-ready times, and start, pause or reset the
 timer. Sound still comes from the computer.

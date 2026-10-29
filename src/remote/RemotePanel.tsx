@@ -84,7 +84,9 @@ export function RemotePanel({ remote, onConnect }: { remote: Remote; onConnect: 
   const { status, link } = remote;
   const held = status === 'connected' || status === 'away';
   const [copied, setCopied] = useState(false);
-  const qr = useQr(held ? null : link);
+  // Tucked away behind a button until wanted; the remote keeps running while hidden.
+  const [open, setOpen] = useState(false);
+  const qr = useQr(held || !open ? null : link);
 
   const copy = () => {
     if (!link) return;
@@ -94,11 +96,23 @@ export function RemotePanel({ remote, onConnect }: { remote: Remote; onConnect: 
     });
   };
 
+  if (!open) {
+    return (
+      <button className="remote-toggle" aria-expanded="false" onClick={() => setOpen(true)}>
+        Phone remote
+        {status !== 'off' && <span className={`remote-status ${status}`}>{STATUS_TEXT[status]}</span>}
+      </button>
+    );
+  }
+
   return (
     <section className="remote">
       <div className="remote-head">
         <h2>Phone remote</h2>
         <span className={`remote-status ${status}`}>{STATUS_TEXT[status]}</span>
+        <button className="link" aria-expanded="true" onClick={() => setOpen(false)}>
+          Hide
+        </button>
       </div>
       {status === 'off' ? (
         <>
