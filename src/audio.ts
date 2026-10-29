@@ -119,8 +119,8 @@ export function playCountdown(second: number, style: CountdownStyle): void {
 export function playAnnouncement(kind: 'work' | 'rest', style: CountdownStyle): void {
   let after: number;
   if (kind === 'work') {
-    for (let i = 0; i < 3; i++) bellStrike(i * BELL_GAP);
-    after = 2 * BELL_GAP + 0.45;
+    for (let i = 0; i < 3; i++) ringBell(i * BELL_GAP);
+    after = 2 * BELL_GAP + 0.6;
   } else {
     buzz(BUZZ_LENGTH);
     after = BUZZ_LENGTH + 0.1;
@@ -129,8 +129,65 @@ export function playAnnouncement(kind: 'work' | 'rest', style: CountdownStyle): 
 }
 
 // Seconds between the work bell's three rings, and how long the rest buzzer lasts.
-const BELL_GAP = 0.3;
+const BELL_GAP = 0.22;
 const BUZZ_LENGTH = 0.9;
+
+// Ring-bell partials as [ratio to the fundamental, level, decay seconds].
+// Close pairs (1 / 1.012, 2.76 / 2.79) beat against each other for the clang.
+const RING_PARTIALS = [
+  [1, 0.55, 2.2],
+  [1.012, 0.35, 2.0],
+  [2.76, 0.45, 1.4],
+  [2.79, 0.3, 1.3],
+  [4.07, 0.3, 0.9],
+  [5.4, 0.25, 0.6],
+  [6.93, 0.18, 0.4],
+  [8.9, 0.12, 0.25],
+] as const;
+
+/**
+ * One hard hammer hit on a big brass ring bell: low-ish fundamental, beating
+ * inharmonic partials and a noise burst for the strike, all driven into a soft
+ * clipper so it snarls rather than chimes.
+ */
+function ringBell(at: number): void {
+  if (!ctx || !out) return;
+  const t0 = ctx.currentTime + at;
+  const drive = ctx.createWaveShaper();
+  const curve = new Float32Array(1024);
+  for (let i = 0; i < curve.length; i++) curve[i] = Math.tanh(2.5 * ((i / (curve.length - 1)) * 2 - 1));
+  drive.curve = curve;
+  const level = ctx.createGain();
+  level.gain.value = 0.8;
+  drive.connect(level).connect(out);
+
+  for (const [ratio, gain, decay] of RING_PARTIALS) {
+    const osc = ctx.createOscillator();
+    const amp = ctx.createGain();
+    osc.frequency.value = 780 * ratio;
+    amp.gain.setValueAtTime(gain, t0);
+    amp.gain.exponentialRampToValueAtTime(0.0001, t0 + decay);
+    osc.connect(amp).connect(drive);
+    osc.start(t0);
+    osc.stop(t0 + decay);
+  }
+
+  // Hammer: a short band-passed noise crack on top of each hit.
+  const noise = ctx.createBuffer(1, Math.ceil(ctx.sampleRate * 0.05), ctx.sampleRate);
+  const data = noise.getChannelData(0);
+  for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+  const crack = ctx.createBufferSource();
+  crack.buffer = noise;
+  const band = ctx.createBiquadFilter();
+  band.type = 'bandpass';
+  band.frequency.value = 3500;
+  band.Q.value = 0.8;
+  const amp = ctx.createGain();
+  amp.gain.setValueAtTime(0.9, t0);
+  amp.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.05);
+  crack.connect(band).connect(amp).connect(drive);
+  crack.start(t0);
+}
 
 /** Arena-style buzzer: detuned low saws and a square, filtered so it rasps without hissing. */
 function buzz(duration: number): void {
