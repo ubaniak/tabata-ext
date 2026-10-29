@@ -22,6 +22,27 @@ Click **Full screen** to move the timer into a full screen window so you can
 read it from across the room. Space starts and pauses; Esc (or **Exit full
 screen**) goes back to the side panel. The workout keeps running throughout.
 
+## Phone remote
+
+Click **Phone remote** at the bottom of the side panel, then **Connect
+phone**. Scan the QR code with your phone's camera: a page opens where you can
+set rounds, work, rest and get-ready times, and start, pause or reset the
+timer. Sound still comes from the computer.
+
+- Only one phone at a time. A second phone that scans the code is told someone
+  else is in control.
+- **Kick phone** disconnects the current phone and shows a new code; the old
+  code stops working.
+- **Stop remote** turns the remote off.
+- The phone talks to the computer directly over WebRTC. It works best with both
+  on the same Wi-Fi; some mobile, office and hotel networks block direct
+  connections. PeerJS's free public server introduces the two, and the side
+  panel (or full screen window) has to be open.
+
+The phone page is published to GitHub Pages by `.github/workflows/phone-remote.yml`
+on every push to `main` (one-time setup: **Settings → Pages → Source: GitHub
+Actions**).
+
 ### Updating
 
 Download the new release zip, unzip it over the old folder, then click the
@@ -37,7 +58,13 @@ npm install
 npm test          # engine unit tests (Vitest)
 npm run dev       # UI in a normal tab at /sidepanel.html (no chrome.* APIs)
 npm run build     # outputs dist/
+npm run dev:remote    # phone remote page at http://localhost:5173/
+npm run build:remote  # phone remote page into dist-remote/
 ```
+
+To test the remote without the public services, run a local broker with
+`npx peerjs --port 9000` and build with `VITE_PEER_HOST=localhost
+VITE_PEER_PORT=9000 VITE_PEER_SECURE=false VITE_PHONE_URL=http://localhost:5173/`.
 
 ## Load in Chrome
 
@@ -52,6 +79,9 @@ After code changes, rebuild and hit the reload icon on the extension card.
 
 | Path | Role |
 |------|------|
+| `src/remote/protocol.ts` | Phone remote messages, pairing link, one-phone gate (pure, tested) |
+| `src/remote/host.ts`, `RemotePanel.tsx` | Panel side of the remote: PeerJS host, QR code, Kick phone |
+| `src/remote/client.ts`, `src/phone/` | Phone page (`remote/index.html`), published to GitHub Pages |
 | `public/manifest.json` | MV3 manifest (permissions: `sidePanel`, `storage`) |
 | `public/background.js` | Service worker; opens the side panel on toolbar click |
 | `src/engine.ts` | Pure timer logic: steps, positions, run state, parsing |

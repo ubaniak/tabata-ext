@@ -19,6 +19,7 @@ import { setBadge } from './badge';
 import { loadRun, loadSettings, saveRun, saveSettings } from './storage';
 import { SettingsForm } from './SettingsForm';
 import { enterFullScreen, exitFullScreen, isFullView, onFullscreenChange } from './fullscreen';
+import { RemotePanel, useRemote } from './remote/RemotePanel';
 
 const LABELS = { prep: 'Get ready', work: 'Work', rest: 'Rest' } as const;
 
@@ -135,6 +136,19 @@ export function App() {
       void exitFullScreen();
     }
   };
+  const snapshot = useMemo(() => ({ settings, run }), [settings, run]);
+  const remote = useRemote(snapshot, (msg) => {
+    if (msg.type === 'start') {
+      if (run.status !== 'running' && steps.length > 0) onStartPause();
+    } else if (msg.type === 'pause') {
+      if (run.status === 'running') onStartPause();
+    } else if (msg.type === 'reset') {
+      onReset();
+    } else if (run.status === 'idle') {
+      setSettings((s) => ({ ...s, ...msg.settings }));
+    }
+  });
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => onKey.current(e);
     window.addEventListener('keydown', handler);
@@ -183,6 +197,17 @@ export function App() {
 
       {!full && (
         <SettingsForm settings={settings} onChange={setSettings} disabled={!idle} total={formatTime(totalTime(settings))} />
+      )}
+
+      {!full && (
+        <RemotePanel
+          remote={remote}
+          onConnect={() => {
+            // A click here lets sound play later when the phone presses Start.
+            unlockAudio();
+            remote.connect();
+          }}
+        />
       )}
     </main>
   );

@@ -1,0 +1,78 @@
+/* Phone remote page: the panel's styles, scaled up for thumbs. */
+.phone {
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom))
+    max(16px, env(safe-area-inset-left));
+}
+
+.phone-title {
+  margin: 24px 0 0;
+  font-size: 24px;
+}
+
+.phone-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.phone-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.phone-status.connected { color: var(--work); }
+.phone-status.reconnecting,
+.phone-status.connecting { color: var(--prep); }
+.phone-status.unreachable,
+.phone-status.busy,
+.phone-status.denied,
+.phone-status.kicked { color: var(--rest); }
+
+.phone-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.phone .controls button {
+  padding: 18px;
+  font-size: 18px;
+}
+
+.phone-settings {
+  gap: 4px;
+}
+
+.stepper {
+  display: grid;
+  grid-template-columns: 1fr 52px 72px 52px;
+  align-items: center;
+  gap: 8px;
+}
+
+.stepper-label {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.stepper-value {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.stepper button {
+  padding: 10px 0;
+  font-size: 22px;
+  line-height: 1;
+}
