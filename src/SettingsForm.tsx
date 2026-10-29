@@ -73,9 +73,9 @@ export function SettingsForm({ settings, onChange, disabled, total }: Props) {
           <option value="beep">Beep</option>
         </select>
       </label>
-      {settings.countdownStyle === 'mine' && settings.countdown !== 'off' && (
+      {settings.countdownStyle === 'mine' && (
         <button type="button" className="record-link" onClick={openRecorder}>
-          Record my 3, 2, 1…
+          Record my voice…
         </button>
       )}
       <label className="toggle">
