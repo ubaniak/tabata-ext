@@ -61,6 +61,7 @@ After code changes, rebuild and hit the reload icon on the extension card.
 | `recorder.html`, `src/recorder.tsx` | Page for recording your own 3, 2, 1, work, rest and done (opens in a tab) |
 | `src/clip.ts` | Trims, normalizes and WAV-encodes recorded clips |
 | `src/voiceStore.ts` | Recorded clips in `chrome.storage.local` |
+| `public/sounds/roar.mp3` | Cougar roar and growl played when the workout finishes (two Pixabay clips joined, free to use) |
 | `public/voice/` | Spoken "three / two / one" countdown and "work / rest" clips |
 | `scripts/gen-voice.py` | Regenerates the voice clips with Kokoro TTS |
 | `src/fullscreen.ts` | Moves the timer into its own full screen window and back |
