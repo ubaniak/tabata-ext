@@ -164,10 +164,10 @@ export function playFinish(kind: SoundKind, style: CountdownStyle): void {
   const done = style === 'mine' ? mine.get('done') : undefined;
   play(done, 1.2);
   // The roar follows the "done" so the two don't talk over each other, and the
-  // growl follows the roar.
+  // growl follows straight on from the roar (both clips are trimmed of silence).
   let at = done ? 1.2 + done.duration + 0.2 : 1.3;
   for (const name of ROAR_FILES) {
     const clip = roar.get(name);
-    if (play(clip, at)) at += clip!.duration + 0.1;
+    if (play(clip, at)) at += clip!.duration;
   }
 }
