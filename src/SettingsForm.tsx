@@ -79,7 +79,7 @@ export function SettingsForm({ settings, onChange, disabled, total }: Props) {
         </button>
       )}
       <label className="toggle">
-        <span>Announce work / rest</span>
+        <span>Work bell / rest buzzer</span>
         <input type="checkbox" checked={settings.announce} onChange={(e) => update({ announce: e.target.checked })} />
       </label>
       <div className="total">

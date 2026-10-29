@@ -95,7 +95,7 @@ function Recorder() {
       </button>
       <h2>Work, rest and done</h2>
       <p className="hint">
-        Work and Rest play as each step starts when <strong>Announce work / rest</strong> is on. Done plays
+        Work and Rest play after the work bell / rest buzzer when <strong>Work bell / rest buzzer</strong> is on. Done plays
         after the end chime.
       </p>
       {takes(CUES)}
