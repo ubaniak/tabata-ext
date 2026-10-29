@@ -257,6 +257,74 @@ button:disabled {
   padding: 8px;
 }
 
+/* Phone remote section under the settings. */
+.remote {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.remote-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.remote h2 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.remote .hint {
+  margin: 0;
+  color: var(--muted);
+}
+
+.remote-status {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.remote-status.connected { color: var(--work); }
+.remote-status.away,
+.remote-status.offline { color: var(--prep); }
+
+.remote-code {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+/* QR codes need dark modules on light, whatever the theme. */
+.remote-code img {
+  background: #fff;
+  border-radius: 8px;
+  padding: 6px;
+}
+
+.remote-actions {
+  display: flex;
+  gap: 8px;
+}
+
+button.link {
+  flex: none;
+  padding: 6px 10px;
+  font-weight: 500;
+}
+
+button.danger {
+  background: var(--rest);
+  border-color: transparent;
+  color: #fff;
+}
+
 /* Full screen: the clock fills the window so it reads from across the room. */
 .app.full {
   max-width: none;
