@@ -57,12 +57,12 @@ After code changes, rebuild and hit the reload icon on the extension card.
 | `src/engine.ts` | Pure timer logic: steps, positions, run state, parsing |
 | `src/App.tsx` | Clock, round boxes, controls, tick loop and sound cues |
 | `src/SettingsForm.tsx` | Rounds / work / rest / prep / sound / countdown |
-| `src/audio.ts` | Web Audio synthesized bell, beep, whistle; plays voice clips |
+| `src/audio.ts` | Web Audio synthesized bell, beep, whistle, work bell and rest buzzer; plays voice clips |
 | `recorder.html`, `src/recorder.tsx` | Page for recording your own 3, 2, 1, work, rest and done (opens in a tab) |
 | `src/clip.ts` | Trims, normalizes and WAV-encodes recorded clips |
 | `src/voiceStore.ts` | Recorded clips in `chrome.storage.local` |
 | `public/sounds/roar.mp3` | Cougar roar and growl played when the workout finishes (two Pixabay clips joined, free to use) |
-| `public/voice/` | Spoken "three / two / one" countdown and "work / rest" clips |
+| `public/voice/` | Spoken "three / two / one" countdown clips |
 | `scripts/gen-voice.py` | Regenerates the voice clips with Kokoro TTS |
 | `src/fullscreen.ts` | Moves the timer into its own full screen window and back |
 | `src/badge.ts` | Toolbar badge with seconds left, colored by phase |
@@ -79,11 +79,12 @@ Set **Countdown sound** to **My voice** and click **Record my voice…**. A tab
 opens where you record "three", "two", "one", "work", "rest" and "done" with
 your microphone (Chrome asks for mic access the first time). Clips are trimmed,
 levelled and saved in the extension's local storage. "Work" and "rest" play
-when **Announce work / rest** is on, and "done" plays after the end chime. Any
-word you skip uses the built-in voice (Done has none, so only the chime plays).
+right after the work bell / rest buzzer when **Work bell / rest buzzer** is on,
+and "done" plays after the end chime. A skipped number uses the built-in voice;
+a skipped work, rest or done just leaves the bell, buzzer or chime on its own.
 
 ## Credits
 
-The spoken countdown and announcements were generated with [Kokoro](https://huggingface.co/hexgrad/Kokoro-82M)
+The spoken countdown was generated with [Kokoro](https://huggingface.co/hexgrad/Kokoro-82M)
 (Apache-2.0) via [kokoro-onnx](https://github.com/thewh1teagle/kokoro-onnx),
 voice `af_heart`. See `scripts/gen-voice.py` to change the voice.

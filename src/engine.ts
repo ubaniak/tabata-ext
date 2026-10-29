@@ -18,7 +18,7 @@ export interface Settings {
   sound: SoundKind;
   countdown: CountdownMode;
   countdownStyle: CountdownStyle;
-  /** Say "Work" / "Rest" when those steps start. */
+  /** Ring a boxing bell three times as work starts and a buzzer as rest starts. */
   announce: boolean;
 }
 
