@@ -11,7 +11,7 @@ export default defineConfig({
     outDir: 'dist',
     emptyOutDir: true,
     rollupOptions: {
-      input: { sidepanel: 'sidepanel.html' },
+      input: { sidepanel: 'sidepanel.html', recorder: 'recorder.html' },
     },
   },
 });

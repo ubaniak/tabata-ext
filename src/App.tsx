@@ -67,11 +67,11 @@ export function App() {
       const last = prev.current;
 
       if (last && pos.index !== last.index) {
-        if (pos.done) playFinish(settings.sound);
+        if (pos.done) playFinish(settings.sound, settings.countdownStyle);
         // Prep starts silently; the 3-2-1 countdown at its end still plays.
         else if (pos.step?.kind !== 'prep') {
           playTransition(settings.sound);
-          if (settings.announce && pos.step) playAnnouncement(pos.step.kind);
+          if (settings.announce && pos.step) playAnnouncement(pos.step.kind, settings.countdownStyle);
         }
       } else if (last && countdownDue(settings.countdown, steps[pos.index + 1], last.second, second)) {
         playCountdown(second, settings.countdownStyle);
