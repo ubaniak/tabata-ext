@@ -1,7 +1,9 @@
-// The user's own countdown recordings, as WAV data URLs keyed by second
-// (3, 2, 1). They live in chrome.storage.local: sync storage is too small for
-// audio. Outside the extension, fall back to localStorage.
-export type VoiceClips = Partial<Record<number, string>>;
+// The user's own recordings, as WAV data URLs keyed by cue: the countdown
+// seconds (3, 2, 1) plus "work", "rest" and "done". They live in
+// chrome.storage.local: sync storage is too small for audio. Outside the
+// extension, fall back to localStorage.
+export type ClipName = 3 | 2 | 1 | 'work' | 'rest' | 'done';
+export type VoiceClips = Partial<Record<ClipName, string>>;
 
 const KEY = 'voiceClips';
 const hasChromeStorage = typeof chrome !== 'undefined' && !!chrome.storage;

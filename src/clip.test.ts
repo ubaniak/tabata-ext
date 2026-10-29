@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { MAX_CLIP_SECONDS, encodeWav, trimClip } from './clip';
+import { MAX_CLIP_SECONDS, MAX_CUE_SECONDS, encodeWav, trimClip } from './clip';
 
 const RATE = 1000;
 const silence = (n: number) => new Float32Array(n);
@@ -21,6 +21,11 @@ describe('trimClip', () => {
   it('caps the length so the next cue is not overlapped', () => {
     const out = trimClip(tone(3000, 0.5), RATE)!;
     expect(out.length).toBe(MAX_CLIP_SECONDS * RATE);
+  });
+
+  it('allows longer work / rest / done clips', () => {
+    const out = trimClip(tone(3000, 0.5), RATE, MAX_CUE_SECONDS)!;
+    expect(out.length).toBe(MAX_CUE_SECONDS * RATE);
   });
 
   it('returns null for a silent take', () => {
