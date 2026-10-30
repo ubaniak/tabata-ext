@@ -130,15 +130,24 @@ export function formatTime(totalSeconds: number): string {
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
-/** Accepts "M:SS", "SS", or "M:S"; returns seconds, or null if invalid. */
+/**
+ * Accepts "M:SS" or bare digits; returns seconds, or null if invalid. Bare
+ * digits read like a microwave: one or two digits are seconds ("45", "90"),
+ * and with three or more the last two are seconds and the rest minutes
+ * ("100" is 1:00, "150" is 1:50, "190" is 1:90 = 2:30).
+ */
 export function parseTime(input: string): number | null {
   const trimmed = input.trim();
   const match = /^(?:(\d+):)?(\d+)$/.exec(trimmed);
   if (!match) return null;
-  const minutes = match[1] ? Number(match[1]) : 0;
-  const seconds = Number(match[2]);
-  if (match[1] && seconds >= 60) return null;
-  return minutes * 60 + seconds;
+  if (match[1]) {
+    const seconds = Number(match[2]);
+    if (seconds >= 60) return null;
+    return Number(match[1]) * 60 + seconds;
+  }
+  const digits = match[2];
+  if (digits.length <= 2) return Number(digits);
+  return Number(digits.slice(0, -2)) * 60 + Number(digits.slice(-2));
 }
 
 /**
