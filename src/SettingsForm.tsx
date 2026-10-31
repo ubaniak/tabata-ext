@@ -94,11 +94,13 @@ export function SettingsForm({ settings, onChange, disabled, total }: Props) {
 function DraftField({
   value,
   parse,
+  format,
   onCommit,
   inputMode,
 }: {
   value: string;
   parse: (raw: string) => number | null;
+  format: (n: number) => string;
   onCommit: (n: number) => void;
   inputMode: 'numeric' | 'text';
 }) {
@@ -108,7 +110,11 @@ function DraftField({
   const commit = () => {
     const n = parse(draft);
     if (n === null) setDraft(value);
-    else onCommit(n);
+    else {
+      // Normalise what was typed ("150" -> "1:50") even if the value didn't change.
+      setDraft(format(n));
+      onCommit(n);
+    }
   };
 
   return (
@@ -127,6 +133,7 @@ function TimeField({ seconds, min, onCommit }: { seconds: number; min: number; o
   return (
     <DraftField
       value={formatTime(seconds)}
+      format={formatTime}
       inputMode="text"
       onCommit={onCommit}
       parse={(raw) => {
@@ -141,6 +148,7 @@ function NumberField({ value, min, max, onCommit }: { value: number; min: number
   return (
     <DraftField
       value={String(value)}
+      format={String}
       inputMode="numeric"
       onCommit={onCommit}
       parse={(raw) => {

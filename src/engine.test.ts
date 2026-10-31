@@ -111,6 +111,20 @@ describe('formatTime / parseTime', () => {
     expect(parseTime(' 2:00 ')).toBe(120);
   });
 
+  it('reads three or more bare digits as minutes and seconds', () => {
+    expect(parseTime('100')).toBe(60);
+    expect(parseTime('150')).toBe(110);
+    expect(parseTime('230')).toBe(150);
+    expect(parseTime('1000')).toBe(600);
+    expect(parseTime('0100')).toBe(60);
+  });
+
+  it('keeps one or two bare digits as seconds, even past 59', () => {
+    expect(parseTime('5')).toBe(5);
+    expect(parseTime('90')).toBe(90);
+    expect(parseTime('190')).toBe(150);
+  });
+
   it('rejects junk', () => {
     expect(parseTime('')).toBeNull();
     expect(parseTime('1:75')).toBeNull();
